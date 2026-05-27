@@ -1,0 +1,125 @@
+<!DOCTYPE html> <html lang="en"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Cryptographic Gateway Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; border-bottom: 2px solid #34495e; padding-bottom: 10px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .full-width { grid-column: span 2; }
+        h2 { color: #2980b9; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        label { display: block; margin: 10px 0 5px; font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; }
+        button:hover { background-color: #219653; }
+        .btn-pqc { background-color: #8e44ad; }
+        .btn-pqc:hover { background-color: #732d91; }
+        .btn-he { background-color: #d35400; }
+        .btn-he:hover { background-color: #b33921; }
+        .output-box { background-color: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; min-height: 60px; white-space: pre-wrap; word-break: break-all; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Advanced Cryptographic Gateway Dashboard</h1>
+
+        <div class="grid">
+            <!-- PQC Module Card -->
+            <div class="card full-width">
+                <h2>1. Post-Quantum Cryptography Channel Handshake (ML-KEM-768)</h2>
+                <p>Initialize a secure session key resistant to future quantum computing decryption attacks [arxiv.org, cloudflare.com].</p>
+                <button class="btn-pqc" onclick="triggerPQCHandshake()">Execute Quantum-Safe Handshake</button>
+                <div class="output-box" id="pqc-output">Waiting for handshake initialization...</div>
+            </div>
+
+            <!-- ABE Module Card -->
+            <div class="card">
+                <h2>2. Attribute-Based Storage (Firebase Upload)</h2>
+                <label>Patient ID:</label>
+                <input type="text" id="patient-id" value="PATIENT_8841">
+
+                <label>Medical Record Payload:</label>
+                <textarea id="medical-record" rows="3">DIAGNOSIS: Acute Cardiovascular Arrhythmia // TREATMENT: Beta-Blockers 50mg</textarea>
+
+                <label>Access Policy Rules (Comma Separated):</label>
+                <input type="text" id="access-policy" value="Role:Oncologist, Institution:General_Hospital">
+
+                <button onclick="uploadABEData()">Encrypt & Sync to Firebase</button>
+                <div class="output-box" id="abe-upload-output">Awaiting data package submission...</div>
+            </div>
+
+            <!-- HE Module Card -->
+            <div class="card">
+                <h2>3. Homomorphic Cloud Metrics Analytics</h2>
+                <p>Compute metrics on numeric values without exposing plaintext parameters to Google Firebase [arxiv.org].</p>
+
+                <label>Diabetic Glucose Parameter A (mg/dL):</label>
+                <input type="number" id="metric-a" value="135">
+
+                <label>Diabetic Glucose Parameter B (mg/dL):</label>
+                <input type="number" id="metric-b" value="105">
+
+                <button class="btn-he" onclick="computeHEMetrics()">Compute & Store Homomorphic Sum</button>
+                <div class="output-box" id="he-output">Awaiting mathematical execution queue...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function triggerPQCHandshake() {
+            const out = document.getElementById('pqc-output');
+            out.innerText = "Processing lattice matrix operations...";
+            try {
+                const res = await fetch('/api/pqc/handshake', { method: 'POST' });
+                const data = await res.json();
+                out.innerText = JSON.stringify(data, null, 2);
+            } catch (err) { out.innerText = "Error: " + err; }
+        }
+
+        async function uploadABEData() {
+            const out = document.getElementById('abe-upload-output');
+            out.innerText = "Generating symmetric cipher block and locking variables...";
+
+            const payload = {
+                patient_id: document.getElementById('patient-id').value,
+                record: document.getElementById('medical-record').value,
+                policy: document.getElementById('access-policy').value.split(',').map(s => s.trim())
+            };
+
+            try {
+                const res = await fetch('/api/data/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                out.innerText = JSON.stringify(data, null, 2);
+            } catch (err) { out.innerText = "Error: " + err; }
+        }
+
+        async function computeHEMetrics() {
+            const out = document.getElementById('he-output');
+            out.innerText = "Encrypting parameters into tensors for out-of-boundary processing...";
+
+            const payload = {
+                batch_id: "BATCH_" + Math.floor(Math.random() * 10000),
+                metric_a: document.getElementById('metric-a').value,
+                metric_b: document.getElementById('metric-b').value
+            };
+
+            try {
+                const res = await fetch('/api/analytics/compute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                out.innerText = JSON.stringify(data, null, 2);
+            } catch (err) { out.innerText = "Error: " + err; }
+        }
+    </script>
+</body>
+</html>
+
