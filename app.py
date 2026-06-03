@@ -21,13 +21,29 @@ app = Flask(__name__)
 
 # --- FIREBASE CONNECTOR CONFIGURATION ---
 try:
-    # Load the service account private key file downloaded from the console
-    cred = credentials.Certificate("firebase_credentials.json")
+    firebase_config = {
+        "type": os.environ.get("type"),
+        "project_id": os.environ.get("project_id"),
+        "private_key_id": os.environ.get("private_key_id"),
+        "private_key": os.environ.get("private_key").replace("\\n", "\n"),
+        "client_email": os.environ.get("client_email"),
+        "client_id": os.environ.get("client_id"),
+        "auth_uri": os.environ.get("auth_uri"),
+        "token_uri": os.environ.get("token_uri"),
+        "auth_provider_x509_cert_url": os.environ.get("auth_provider_x509_cert_url"),
+        "client_x509_cert_url": os.environ.get("client_x509_cert_url"),
+        "universe_domain": os.environ.get("universe_domain")
+    }
+
+    cred = credentials.Certificate(firebase_config)
     firebase_admin.initialize_app(cred)
+
     db = firestore.client()
-    print("[System] Firebase Cloud Firestore Connection Successfully Initialized.")
+
+    print("Firebase Connected Successfully")
+
 except Exception as e:
-    print(f"[System Error] Failed to hook Firebase Admin SDK: {e}")
+    print("Firebase Connection Failed:", e)
     db = None
 
 # --- GLOBAL CRYPTOGRAPHIC ANCHORS ---
